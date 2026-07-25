@@ -16,21 +16,28 @@ import (
 )
 
 func Connect(dsn string) *gorm.DB {
-	// Forzar IPv4 - Render no soporta IPv6
 	connConfig, err := pgx.ParseConfig(dsn)
 	if err != nil {
 		log.Fatal("Error parseando DSN:", err)
 	}
+
+	// Forzar IPv4: Render no soporta IPv6 para Supabase
 	connConfig.LookupFunc = func(ctx context.Context, host string) ([]string, error) {
-		ips, err := net.DefaultResolver.LookupIP(ctx, "ip4", host)
+		ips, err := net.DefaultResolver.LookupHost(ctx, host)
 		if err != nil {
 			return nil, err
 		}
-		addrs := make([]string, len(ips))
-		for i, ip := range ips {
-			addrs[i] = ip.String()
+		// Filtrar solo IPv4
+		var ipv4 []string
+		for _, ip := range ips {
+			if parsed := net.ParseIP(ip); parsed != nil && parsed.To4() != nil {
+				ipv4 = append(ipv4, ip)
+			}
 		}
-		return addrs, nil
+		if len(ipv4) > 0 {
+			return ipv4, nil
+		}
+		return ips, nil // fallback a todas si no hay IPv4
 	}
 
 	sqlDB := stdlib.OpenDB(*connConfig)
