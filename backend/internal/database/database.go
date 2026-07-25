@@ -1,47 +1,23 @@
 package database
 
 import (
-	"context"
 	"log"
 	"net"
+	"net/url"
 	"time"
 
 	"planillas-backend/internal/model"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/stdlib"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func Connect(dsn string) *gorm.DB {
-	connConfig, err := pgx.ParseConfig(dsn)
-	if err != nil {
-		log.Fatal("Error parseando DSN:", err)
-	}
+	// Resolver hostname a IPv4 (Render no soporta IPv6 a Supabase)
+	dsn = forceIPv4(dsn)
 
-	// Forzar IPv4: Render no soporta IPv6 para Supabase
-	connConfig.LookupFunc = func(ctx context.Context, host string) ([]string, error) {
-		ips, err := net.DefaultResolver.LookupHost(ctx, host)
-		if err != nil {
-			return nil, err
-		}
-		// Filtrar solo IPv4
-		var ipv4 []string
-		for _, ip := range ips {
-			if parsed := net.ParseIP(ip); parsed != nil && parsed.To4() != nil {
-				ipv4 = append(ipv4, ip)
-			}
-		}
-		if len(ipv4) > 0 {
-			return ipv4, nil
-		}
-		return ips, nil // fallback a todas si no hay IPv4
-	}
-
-	sqlDB := stdlib.OpenDB(*connConfig)
-	db, err := gorm.Open(postgres.New(postgres.Config{Conn: sqlDB}), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error conectando a la base de datos:", err)
 	}
@@ -95,4 +71,38 @@ func seedAdminUsers(db *gorm.DB) {
 		log.Println("  admin: admin@planillas.su")
 		log.Println("  ayudante: asistente@planillas.su")
 	}
+}
+
+// forceIPv4 resuelve el hostname a IPv4 y reemplaza el host en el DSN.
+// Render no soporta IPv6 hacia Supabase.
+func forceIPv4(dsn string) string {
+	u, err := url.Parse(dsn)
+	if err != nil {
+		log.Println("WARN: no se pudo parsear DSN, usando original:", err)
+		return dsn
+	}
+
+	host := u.Hostname()
+	ips, err := net.LookupHost(host)
+	if err != nil {
+		log.Println("WARN: no se pudo resolver", host, ":", err)
+		return dsn
+	}
+
+	// Buscar IPv4
+	for _, ip := range ips {
+		if parsed := net.ParseIP(ip); parsed != nil && parsed.To4() != nil {
+			port := u.Port()
+			if port == "" {
+				port = "5432"
+			}
+			u.Host = net.JoinHostPort(ip, port)
+			newDSN := u.String()
+			log.Println("Resuelto", host, "→", ip, "(IPv4)")
+			return newDSN
+		}
+	}
+
+	log.Println("WARN: no se encontró IPv4 para", host, ", usando DNS original")
+	return dsn
 }
