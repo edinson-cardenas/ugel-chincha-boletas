@@ -514,10 +514,10 @@ export default function Planillas() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
               <Users className="w-5 h-5 text-white" />
             </div>
-            <span className="text-sm font-semibold text-red-600">
+            <span className="text-sm font-semibold text-emerald-600">
               Planilla de Personal Docente
             </span>
           </div>
@@ -537,7 +537,7 @@ export default function Planillas() {
         </button>
       </div>
 
-      <div className="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl shadow-lg overflow-hidden">
+      <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl shadow-lg overflow-hidden">
         <div className="p-5 pb-4 space-y-4">
           {/* ── Row 1: Counter + Mes/Año + Search ── */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -547,14 +547,14 @@ export default function Planillas() {
               </div>
               <div>
                 <p className="text-2xl font-bold leading-none">{total}</p>
-                <p className="text-xs text-red-100/80 mt-0.5">
+                <p className="text-xs text-emerald-100/80 mt-0.5">
                   Personal Docente
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 sm:pl-4 sm:border-l border-white/20">
-              <Filter className="w-4 h-4 text-red-200 shrink-0 hidden sm:block" />
+              <Filter className="w-4 h-4 text-emerald-200 shrink-0 hidden sm:block" />
               <select
                 className="bg-white/15 border border-white/20 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/40 appearance-none cursor-pointer min-w-[140px]"
                 value={filtroMes}
@@ -592,16 +592,16 @@ export default function Planillas() {
             </div>
 
             <div className="relative flex-1 min-w-0 flex items-center gap-2 bg-white/15 border border-white/20 rounded-lg px-3 py-2">
-              <Search className="w-4 h-4 text-red-200 shrink-0" />
+              <Search className="w-4 h-4 text-emerald-200 shrink-0" />
               <input
                 type="text"
                 placeholder="Buscar por DNI, nombre o apellido..."
-                className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-red-200/70 text-sm min-w-0 focus:ring-0 p-0"
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-emerald-200/70 text-sm min-w-0 focus:ring-0 p-0"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
               {searchInput && (
-                <button onClick={() => setSearchInput("")} className="text-red-200 hover:text-white">
+                <button onClick={() => setSearchInput("")} className="text-emerald-200 hover:text-white">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -611,15 +611,15 @@ export default function Planillas() {
           {/* ── Row 2: Filtros avanzados ── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
             <div className="relative" ref={instRef}>
-              <label className="block text-[10px] uppercase tracking-wider text-red-200/70 mb-1 font-medium">
+              <label className="block text-[10px] uppercase tracking-wider text-emerald-200/70 mb-1 font-medium">
                 Institución
               </label>
               <div className="flex items-center gap-2 bg-white/15 border border-white/20 rounded-lg px-3 py-2">
-                <Building className="w-3.5 h-3.5 text-red-200/60 shrink-0" />
+                <Building className="w-3.5 h-3.5 text-emerald-200/60 shrink-0" />
                 <input
                   type="text"
                   placeholder="Buscar institución..."
-                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-red-200/50 text-xs min-w-0 focus:ring-0 p-0"
+                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-emerald-200/50 text-xs min-w-0 focus:ring-0 p-0"
                   value={filtroInstitucion}
                   onChange={(e) => {
                     setFiltroInstitucion(e.target.value);
@@ -635,7 +635,7 @@ export default function Planillas() {
                       setInstSuggestions([]);
                       setPage(1);
                     }}
-                    className="text-red-200 hover:text-white"
+                    className="text-emerald-200 hover:text-white"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -647,7 +647,7 @@ export default function Planillas() {
                     <button
                       key={i}
                       type="button"
-                      className="w-full text-left px-3 py-2 text-xs text-gray-800 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 border-b border-gray-100 dark:border-gray-700 last:border-0 truncate"
+                      className="w-full text-left px-3 py-2 text-xs text-gray-800 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border-b border-gray-100 dark:border-gray-700 last:border-0 truncate"
                       onClick={() => {
                         setFiltroInstitucion(s);
                         setShowInstSuggestions(false);
@@ -662,15 +662,15 @@ export default function Planillas() {
             </div>
 
             <div className="relative" ref={distRef}>
-              <label className="block text-[10px] uppercase tracking-wider text-red-200/70 mb-1 font-medium">
+              <label className="block text-[10px] uppercase tracking-wider text-emerald-200/70 mb-1 font-medium">
                 Distrito
               </label>
               <div className="flex items-center gap-2 bg-white/15 border border-white/20 rounded-lg px-3 py-2">
-                <MapPin className="w-3.5 h-3.5 text-red-200/60 shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-emerald-200/60 shrink-0" />
                 <input
                   type="text"
                   placeholder="Buscar distrito..."
-                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-red-200/50 text-xs min-w-0 focus:ring-0 p-0"
+                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-emerald-200/50 text-xs min-w-0 focus:ring-0 p-0"
                   value={filtroDistrito}
                   onChange={(e) => {
                     setFiltroDistrito(e.target.value);
@@ -686,7 +686,7 @@ export default function Planillas() {
                       setDistSuggestions([]);
                       setPage(1);
                     }}
-                    className="text-red-200 hover:text-white"
+                    className="text-emerald-200 hover:text-white"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -698,7 +698,7 @@ export default function Planillas() {
                     <button
                       key={i}
                       type="button"
-                      className="w-full text-left px-3 py-2 text-xs text-gray-800 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 border-b border-gray-100 dark:border-gray-700 last:border-0 truncate"
+                      className="w-full text-left px-3 py-2 text-xs text-gray-800 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border-b border-gray-100 dark:border-gray-700 last:border-0 truncate"
                       onClick={() => {
                         setFiltroDistrito(s);
                         setShowDistSuggestions(false);
@@ -713,15 +713,15 @@ export default function Planillas() {
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-wider text-red-200/70 mb-1 font-medium">
+              <label className="block text-[10px] uppercase tracking-wider text-emerald-200/70 mb-1 font-medium">
                 RD
               </label>
               <div className="flex items-center gap-2 bg-white/15 border border-white/20 rounded-lg px-3 py-2">
-                <Hash className="w-3.5 h-3.5 text-red-200/60 shrink-0" />
+                <Hash className="w-3.5 h-3.5 text-emerald-200/60 shrink-0" />
                 <input
                   type="text"
                   placeholder="Ej: RD 001234"
-                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-red-200/50 text-xs min-w-0 focus:ring-0 p-0"
+                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-emerald-200/50 text-xs min-w-0 focus:ring-0 p-0"
                   value={filtroRd}
                   onChange={(e) => {
                     setFiltroRd(e.target.value);
@@ -732,15 +732,15 @@ export default function Planillas() {
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-wider text-red-200/70 mb-1 font-medium">
+              <label className="block text-[10px] uppercase tracking-wider text-emerald-200/70 mb-1 font-medium">
                 UU
               </label>
               <div className="flex items-center gap-2 bg-white/15 border border-white/20 rounded-lg px-3 py-2">
-                <Tag className="w-3.5 h-3.5 text-red-200/60 shrink-0" />
+                <Tag className="w-3.5 h-3.5 text-emerald-200/60 shrink-0" />
                 <input
                   type="text"
                   placeholder="Ej: UU-9999"
-                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-red-200/50 text-xs min-w-0 focus:ring-0 p-0"
+                  className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-emerald-200/50 text-xs min-w-0 focus:ring-0 p-0"
                   value={filtroUu}
                   onChange={(e) => {
                     setFiltroUu(e.target.value);
@@ -759,9 +759,9 @@ export default function Planillas() {
           filtroRd ||
           filtroUu) && (
           <div className="px-5 py-2.5 bg-black/10 flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="text-red-100/60 mr-0.5">Filtros:</span>
+            <span className="text-emerald-100/60 mr-0.5">Filtros:</span>
             {filtroMes > 0 && (
-              <span className="inline-flex items-center gap-1 bg-white/15 text-red-100 px-2.5 py-1 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1 bg-white/15 text-emerald-100 px-2.5 py-1 rounded-full font-medium">
                 {MESES_VALOR[filtroMes]} {filtroAnio || ""}
                 <button
                   onClick={() => {
@@ -769,14 +769,14 @@ export default function Planillas() {
                     setFiltroAnio(0);
                     setPage(1);
                   }}
-                  className="text-red-200 hover:text-white ml-0.5"
+                  className="text-emerald-200 hover:text-white ml-0.5"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filtroInstitucion && (
-              <span className="inline-flex items-center gap-1 bg-white/15 text-red-100 px-2.5 py-1 rounded-full font-medium truncate max-w-[200px]">
+              <span className="inline-flex items-center gap-1 bg-white/15 text-emerald-100 px-2.5 py-1 rounded-full font-medium truncate max-w-[200px]">
                 <Building className="w-3 h-3 shrink-0" />
                 {filtroInstitucion}
                 <button
@@ -785,14 +785,14 @@ export default function Planillas() {
                     setInstSuggestions([]);
                     setPage(1);
                   }}
-                  className="text-red-200 hover:text-white ml-0.5 shrink-0"
+                  className="text-emerald-200 hover:text-white ml-0.5 shrink-0"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filtroDistrito && (
-              <span className="inline-flex items-center gap-1 bg-white/15 text-red-100 px-2.5 py-1 rounded-full font-medium truncate max-w-[200px]">
+              <span className="inline-flex items-center gap-1 bg-white/15 text-emerald-100 px-2.5 py-1 rounded-full font-medium truncate max-w-[200px]">
                 <MapPin className="w-3 h-3 shrink-0" />
                 {filtroDistrito}
                 <button
@@ -801,35 +801,35 @@ export default function Planillas() {
                     setDistSuggestions([]);
                     setPage(1);
                   }}
-                  className="text-red-200 hover:text-white ml-0.5 shrink-0"
+                  className="text-emerald-200 hover:text-white ml-0.5 shrink-0"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filtroRd && (
-              <span className="inline-flex items-center gap-1 bg-white/15 text-red-100 px-2.5 py-1 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1 bg-white/15 text-emerald-100 px-2.5 py-1 rounded-full font-medium">
                 RD: {filtroRd}
                 <button
                   onClick={() => {
                     setFiltroRd("");
                     setPage(1);
                   }}
-                  className="text-red-200 hover:text-white ml-0.5"
+                  className="text-emerald-200 hover:text-white ml-0.5"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filtroUu && (
-              <span className="inline-flex items-center gap-1 bg-white/15 text-red-100 px-2.5 py-1 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1 bg-white/15 text-emerald-100 px-2.5 py-1 rounded-full font-medium">
                 UU: {filtroUu}
                 <button
                   onClick={() => {
                     setFiltroUu("");
                     setPage(1);
                   }}
-                  className="text-red-200 hover:text-white ml-0.5"
+                  className="text-emerald-200 hover:text-white ml-0.5"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -847,7 +847,7 @@ export default function Planillas() {
                 setFiltroUu("");
                 setPage(1);
               }}
-              className="text-red-200 hover:text-white underline ml-1"
+              className="text-emerald-200 hover:text-white underline ml-1"
             >
               Limpiar todo
             </button>
@@ -917,7 +917,7 @@ export default function Planillas() {
                   >
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                           {p.nombres?.charAt(0) || "?"}
                         </div>
                         <div>
@@ -961,7 +961,7 @@ export default function Planillas() {
                         </button>
                         <button
                           onClick={() => confirmDelete(p)}
-                          className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-all"
+                          className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-emerald-500 transition-all"
                           title="Eliminar"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -984,7 +984,7 @@ export default function Planillas() {
                     {Math.min(page * 20, total)}
                   </span>{" "}
                   de{" "}
-                  <span className="font-semibold text-red-600 dark:text-red-400">
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                     {total}
                   </span>
                 </span>
@@ -1003,7 +1003,7 @@ export default function Planillas() {
                       onClick={() => setPage(pageNum)}
                       className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
                         page === pageNum
-                          ? "bg-red-600 text-white shadow-sm"
+                          ? "bg-emerald-600 text-white shadow-sm"
                           : "hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
                       }`}
                     >
@@ -1033,7 +1033,7 @@ export default function Planillas() {
             className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-6 py-5 bg-gradient-to-r from-red-600 to-red-700 rounded-t-2xl shrink-0">
+            <div className="px-6 py-5 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-t-2xl shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -1073,7 +1073,7 @@ export default function Planillas() {
                 {/* ── Columna izquierda: Datos personales ── */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 pb-1 border-b border-gray-200 dark:border-gray-700">
-                    <User className="w-4 h-4 text-red-600" />
+                    <User className="w-4 h-4 text-emerald-600" />
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                       Datos Personales
                     </h4>
@@ -1090,7 +1090,7 @@ export default function Planillas() {
                         onChange={(e) =>
                           setForm({ ...form, dni: e.target.value })
                         }
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
                         placeholder="12345678"
                         maxLength={8}
                       />
@@ -1105,7 +1105,7 @@ export default function Planillas() {
                         onChange={(e) =>
                           setForm({ ...form, puesto: e.target.value })
                         }
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
                         placeholder="Docente, Auxiliar, etc."
                       />
                     </div>
@@ -1123,11 +1123,11 @@ export default function Planillas() {
                         if (errors.nombres)
                           setErrors({ ...errors, nombres: undefined });
                       }}
-                      className={`w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border-2 ${errors.nombres ? "border-red-400 bg-red-50 dark:bg-red-900/20" : "border-gray-200 dark:border-gray-600"} rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400`}
+                      className={`w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border-2 ${errors.nombres ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20" : "border-gray-200 dark:border-gray-600"} rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400`}
                       placeholder="Nombres completos"
                     />
                     {errors.nombres && (
-                      <p className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
                         {errors.nombres}
                       </p>
                     )}
@@ -1145,11 +1145,11 @@ export default function Planillas() {
                         if (errors.apellidos)
                           setErrors({ ...errors, apellidos: undefined });
                       }}
-                      className={`w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border-2 ${errors.apellidos ? "border-red-400 bg-red-50 dark:bg-red-900/20" : "border-gray-200 dark:border-gray-600"} rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400`}
+                      className={`w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border-2 ${errors.apellidos ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20" : "border-gray-200 dark:border-gray-600"} rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400`}
                       placeholder="Apellidos completos"
                     />
                     {errors.apellidos && (
-                      <p className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
                         {errors.apellidos}
                       </p>
                     )}
@@ -1166,7 +1166,7 @@ export default function Planillas() {
                         onChange={(e) =>
                           setForm({ ...form, rd: e.target.value })
                         }
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
                         placeholder="RD"
                       />
                     </div>
@@ -1180,7 +1180,7 @@ export default function Planillas() {
                         onChange={(e) =>
                           setForm({ ...form, uu: e.target.value })
                         }
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
                         placeholder="UU"
                       />
                     </div>
@@ -1198,7 +1198,7 @@ export default function Planillas() {
                         onChange={(e) =>
                           setForm({ ...form, institucion: e.target.value })
                         }
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
                         placeholder="Nombre de la institución"
                       />
                     </div>
@@ -1212,7 +1212,7 @@ export default function Planillas() {
                         onChange={(e) =>
                           setForm({ ...form, distrito: e.target.value })
                         }
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white placeholder:text-gray-400"
                         placeholder="Distrito"
                       />
                     </div>
@@ -1225,7 +1225,7 @@ export default function Planillas() {
                     <>
                       <div className="flex items-center justify-between pb-1 border-b border-gray-200 dark:border-gray-700">
                         <div className="flex items-center gap-2">
-                          <Wallet className="w-4 h-4 text-red-600" />
+                          <Wallet className="w-4 h-4 text-emerald-600" />
                           <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                             Planillas y Conceptos
                           </h4>
@@ -1235,7 +1235,7 @@ export default function Planillas() {
                           onClick={() =>
                             setShowAgregarPlanilla(!showAgregarPlanilla)
                           }
-                          className="text-xs text-red-600 hover:text-red-700 font-medium inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          className="text-xs text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                         >
                           <PlusCircle className="w-3.5 h-3.5" /> Agregar
                         </button>
@@ -1292,7 +1292,7 @@ export default function Planillas() {
                       <div className="space-y-2">
                         {loadingPlanillas ? (
                           <div className="text-center py-8">
-                            <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                            <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                             <p className="text-xs text-gray-400">
                               Cargando planillas...
                             </p>
@@ -1329,11 +1329,11 @@ export default function Planillas() {
                                   <span className="text-green-600 dark:text-green-400">
                                     H: S/{p.total_haberes.toFixed(2)}
                                   </span>
-                                  <span className="text-red-500">
+                                  <span className="text-emerald-500">
                                     D: S/{p.total_descuentos.toFixed(2)}
                                   </span>
                                   <span
-                                    className={`${p.total_haberes - p.total_descuentos >= 0 ? "text-blue-600" : "text-red-600"}`}
+                                    className={`${p.total_haberes - p.total_descuentos >= 0 ? "text-blue-600" : "text-emerald-600"}`}
                                   >
                                     N: S/
                                     {(
@@ -1416,7 +1416,7 @@ export default function Planillas() {
                                                   idx,
                                                 )
                                               }
-                                              className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                              className="p-1.5 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
                                             >
                                               <X className="w-3.5 h-3.5" />
                                             </button>
@@ -1428,7 +1428,7 @@ export default function Planillas() {
 
                                   <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
                                     <div className="flex items-center justify-between mb-2">
-                                      <span className="text-xs font-semibold text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2.5 py-1 rounded-full">
+                                      <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded-full">
                                         Descuentos
                                       </span>
                                       <button
@@ -1436,7 +1436,7 @@ export default function Planillas() {
                                         onClick={() =>
                                           agregarConceptoDescuentos(p.id)
                                         }
-                                        className="text-[11px] text-red-600 hover:text-red-700 font-medium inline-flex items-center gap-0.5 px-2 py-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                        className="text-[11px] text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-0.5 px-2 py-0.5 rounded hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                                       >
                                         <PlusCircle className="w-3 h-3" />{" "}
                                         Agregar
@@ -1464,7 +1464,7 @@ export default function Planillas() {
                                                   e.target.value,
                                                 )
                                               }
-                                              className="flex-1 min-w-0 px-3 py-1.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 text-gray-900 dark:text-white placeholder:text-gray-400"
+                                              className="flex-1 min-w-0 px-3 py-1.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 text-gray-900 dark:text-white placeholder:text-gray-400"
                                               placeholder="Concepto"
                                             />
                                             <div className="relative w-28">
@@ -1484,7 +1484,7 @@ export default function Planillas() {
                                                     e.target.value,
                                                   )
                                                 }
-                                                className="w-full pl-7 pr-3 py-1.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 text-gray-900 dark:text-white text-right"
+                                                className="w-full pl-7 pr-3 py-1.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 text-gray-900 dark:text-white text-right"
                                                 placeholder="0.00"
                                               />
                                             </div>
@@ -1497,7 +1497,7 @@ export default function Planillas() {
                                                   idx,
                                                 )
                                               }
-                                              className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                              className="p-1.5 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
                                             >
                                               <X className="w-3.5 h-3.5" />
                                             </button>
@@ -1511,7 +1511,7 @@ export default function Planillas() {
                                     type="button"
                                     onClick={() => guardarConceptos(p.id)}
                                     disabled={savingPlanilla}
-                                    className="w-full py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg disabled:opacity-50 transition-colors inline-flex items-center justify-center gap-1.5 shadow-sm"
+                                    className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg disabled:opacity-50 transition-colors inline-flex items-center justify-center gap-1.5 shadow-sm"
                                   >
                                     <Save className="w-3.5 h-3.5" />{" "}
                                     {savingPlanilla
@@ -1528,7 +1528,7 @@ export default function Planillas() {
                   ) : (
                     <>
                       <div className="flex items-center gap-2 pb-1 border-b border-gray-200 dark:border-gray-700">
-                        <Wallet className="w-4 h-4 text-red-600" />
+                        <Wallet className="w-4 h-4 text-emerald-600" />
                         <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                           Agregar primera planilla
                         </h4>
@@ -1651,7 +1651,7 @@ export default function Planillas() {
                                           prev.filter((_, i) => i !== idx),
                                         )
                                       }
-                                      className="p-1 text-red-400 hover:text-red-600"
+                                      className="p-1 text-emerald-400 hover:text-emerald-600"
                                     >
                                       <X className="w-3 h-3" />
                                     </button>
@@ -1662,7 +1662,7 @@ export default function Planillas() {
                           </div>
                           <div>
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-xs font-semibold text-red-700 dark:text-red-400">
+                              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                                 Descuentos
                               </span>
                               <button
@@ -1673,7 +1673,7 @@ export default function Planillas() {
                                     { tipo: "", monto: 0 },
                                   ])
                                 }
-                                className="text-[11px] text-red-600 hover:text-red-700 font-medium inline-flex items-center gap-0.5"
+                                className="text-[11px] text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-0.5"
                               >
                                 <PlusCircle className="w-3 h-3" /> Agregar
                               </button>
@@ -1700,7 +1700,7 @@ export default function Planillas() {
                                           ),
                                         )
                                       }
-                                      className="flex-1 min-w-0 px-2.5 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 text-gray-900 dark:text-white"
+                                      className="flex-1 min-w-0 px-2.5 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 text-gray-900 dark:text-white"
                                       placeholder="Concepto"
                                     />
                                     <div className="relative w-24">
@@ -1725,7 +1725,7 @@ export default function Planillas() {
                                             ),
                                           )
                                         }
-                                        className="w-full pl-6 pr-2 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 text-gray-900 dark:text-white text-right"
+                                        className="w-full pl-6 pr-2 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 text-gray-900 dark:text-white text-right"
                                         placeholder="0.00"
                                       />
                                     </div>
@@ -1736,7 +1736,7 @@ export default function Planillas() {
                                           prev.filter((_, i) => i !== idx),
                                         )
                                       }
-                                      className="p-1 text-red-400 hover:text-red-600"
+                                      className="p-1 text-emerald-400 hover:text-emerald-600"
                                     >
                                       <X className="w-3 h-3" />
                                     </button>
@@ -1762,7 +1762,7 @@ export default function Planillas() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-sm text-sm inline-flex items-center gap-2"
+                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-all shadow-sm text-sm inline-flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />{" "}
                   {editing ? "Actualizar Personal" : "Guardar Personal"}
@@ -1782,7 +1782,7 @@ export default function Planillas() {
             className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-6 py-5 bg-gradient-to-r from-red-600 to-red-700">
+            <div className="px-6 py-5 bg-gradient-to-r from-emerald-600 to-emerald-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -1807,9 +1807,9 @@ export default function Planillas() {
             </div>
 
             <div className="p-6">
-              <div className="flex items-center gap-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl mb-5">
-                <div className="w-12 h-12 bg-red-100 dark:bg-red-800 rounded-xl flex items-center justify-center shrink-0">
-                  <User className="w-6 h-6 text-red-600 dark:text-red-400" />
+              <div className="flex items-center gap-4 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 rounded-xl mb-5">
+                <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-800 rounded-xl flex items-center justify-center shrink-0">
+                  <User className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">
@@ -1841,7 +1841,7 @@ export default function Planillas() {
                   type="button"
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all inline-flex items-center gap-2 disabled:opacity-60"
+                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-all inline-flex items-center gap-2 disabled:opacity-60"
                 >
                   {deleting ? (
                     <>Eliminando...</>

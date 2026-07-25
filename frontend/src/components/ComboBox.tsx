@@ -58,7 +58,7 @@ export default function ComboBox({ options, value, onChange, placeholder = 'Sele
           <div className="p-2 border-b border-gray-100 dark:border-gray-700">
             <input
               type="text"
-              className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 dark:text-white placeholder:text-gray-400"
+              className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 dark:text-white placeholder:text-gray-400"
               placeholder="Buscar..."
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -73,7 +73,7 @@ export default function ComboBox({ options, value, onChange, placeholder = 'Sele
                 <button
                   key={opt.value}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    opt.value === value ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-medium' : 'text-gray-700 dark:text-gray-300'
+                    opt.value === value ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-700 dark:text-gray-300'
                   }`}
                   onClick={() => { onChange(opt.value); setOpen(false) }}
                 >

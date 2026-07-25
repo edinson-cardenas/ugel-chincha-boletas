@@ -38,9 +38,11 @@ func initDB() {
 		&models.Planilla{},
 		&models.Ingreso{},
 		&models.Descuento{},
+		&models.LoginAttempt{},
 	)
 
 	crearUsuarioAdmin()
+	handlers.StartCleanupRoutines(db)
 
 	log.Println("Base de datos conectada correctamente")
 }
@@ -125,6 +127,7 @@ func main() {
 			usuarios := protected.Group("/usuarios")
 			{
 				usuarios.PUT("/cambiar-password", handlers.CambiarPassword)
+				usuarios.POST("/logout", handlers.Logout)
 			}
 
 			personal := protected.Group("/personal")

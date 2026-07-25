@@ -271,8 +271,8 @@ export default function Importar() {
       <div className="space-y-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Upload className="w-5 h-5 text-red-600" />
-            <span className="text-sm font-medium text-red-600">Importación de Datos</span>
+            <Upload className="w-5 h-5 text-emerald-600" />
+            <span className="text-sm font-medium text-emerald-600">Importación de Datos</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Importar Planilla</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Carga archivos Excel para importar nóminas masivamente</p>
@@ -311,8 +311,8 @@ export default function Importar() {
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <Upload className="w-5 h-5 text-red-600" />
-          <span className="text-sm font-medium text-red-600">Importación de Datos</span>
+          <Upload className="w-5 h-5 text-emerald-600" />
+          <span className="text-sm font-medium text-emerald-600">Importación de Datos</span>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Importar Planilla</h2>
         <p className="text-gray-500 dark:text-gray-400 mt-1">Carga archivos Excel para importar nóminas masivamente</p>
@@ -356,7 +356,7 @@ export default function Importar() {
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3 mb-5">
-              <div className="p-2.5 bg-red-600 rounded-xl">
+              <div className="p-2.5 bg-emerald-600 rounded-xl">
                 <Upload className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -366,7 +366,7 @@ export default function Importar() {
             </div>
 
             <div
-              className={`upload-zone ${dragging ? 'upload-zone-active' : file ? 'border-red-300 bg-red-50' : ''}`}
+              className={`upload-zone ${dragging ? 'upload-zone-active' : file ? 'border-emerald-300 bg-emerald-50' : ''}`}
               onClick={() => fileInputRef.current?.click()}
               onDragOver={e => { e.preventDefault(); setDragging(true) }}
               onDragLeave={() => setDragging(false)}
@@ -491,9 +491,9 @@ export default function Importar() {
 
               {periodoYaImportado ? (
                 <div className="flex flex-col gap-3 mt-4">
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-red-700 dark:text-red-400">
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-xs text-emerald-700 dark:text-emerald-400">
                       Este período ({mesNombre} {anio}) ya fue importado anteriormente. Usa la sección "Limpiar Importación" a la derecha para eliminarlo y reimportarlo.
                     </p>
                   </div>
@@ -543,7 +543,7 @@ export default function Importar() {
               onClick={() => setShowLimpiar(!showLimpiar)}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-red-600 rounded-xl">
+                <div className="p-2.5 bg-emerald-600 rounded-xl">
                   <Trash2 className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -553,7 +553,7 @@ export default function Importar() {
               </div>
               <div className="flex items-center gap-2">
                 {periodosImportados.length > 0 && (
-                  <span className="text-xs bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-2.5 py-1 rounded-full font-medium">
+                  <span className="text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full font-medium">
                     {periodosImportados.length} período{periodosImportados.length !== 1 ? 's' : ''}
                   </span>
                 )}
@@ -576,8 +576,8 @@ export default function Importar() {
                               onClick={() => { setLimpiarMes(p.mes); setLimpiarAnio(p.anio) }}
                               className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
                                 limpiarMes === p.mes && limpiarAnio === p.anio
-                                  ? 'bg-red-600 text-white border-red-600'
-                                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-red-300'
+                                  ? 'bg-emerald-600 text-white border-emerald-600'
+                                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-emerald-300'
                               }`}
                             >
                               {MESES.find((m: any) => m.v === p.mes)?.l?.substring(0, 3)} {p.anio}
@@ -593,7 +593,7 @@ export default function Importar() {
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Mes</label>
                     <select
-                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white"
                       value={limpiarMes}
                       onChange={e => setLimpiarMes(Number(e.target.value))}
                     >
@@ -606,7 +606,7 @@ export default function Importar() {
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Año</label>
                     <select
-                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-red-500 transition-all text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:border-emerald-500 transition-all text-gray-900 dark:text-white"
                       value={limpiarAnio}
                       onChange={e => setLimpiarAnio(Number(e.target.value))}
                     >
@@ -618,12 +618,12 @@ export default function Importar() {
                   </div>
                 </div>
 
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4">
                   <div className="flex items-start gap-3">
-                    <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <AlertTriangle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-red-700 dark:text-red-400">¿Estás seguro?</p>
-                      <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                      <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">¿Estás seguro?</p>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
                         Esta acción eliminará TODAS las planillas, ingresos y descuentos del período seleccionado ({MESES.find((m: any) => m.v === limpiarMes)?.l || '...'} {limpiarAnio || '...'}). Los empleados sin planillas en otros períodos también serán eliminados.
                       </p>
                     </div>
@@ -650,7 +650,7 @@ export default function Importar() {
                     }
                   }}
                   disabled={limpiando || !limpiarMes || !limpiarAnio}
-                  className="w-full py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                 >
                   {limpiando ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -661,16 +661,16 @@ export default function Importar() {
                 </button>
 
                 {cleanError && (
-                  <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                    <span className="text-sm text-red-700 dark:text-red-400">{cleanError}</span>
+                  <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                    <span className="text-sm text-emerald-700 dark:text-emerald-400">{cleanError}</span>
                   </div>
                 )}
 
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                    <p className="text-xs font-semibold text-red-600 uppercase tracking-wider">Zona de Peligro</p>
+                    <AlertTriangle className="w-4 h-4 text-emerald-600" />
+                    <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Zona de Peligro</p>
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
                     Elimina TODOS los datos del sistema (personal, planillas, ingresos y descuentos). Esta acción no se puede deshacer.
@@ -695,7 +695,7 @@ export default function Importar() {
                       }
                     }}
                     disabled={limpiando}
-                    className="w-full py-2.5 bg-red-700 hover:bg-red-800 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+                    className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                   >
                     {limpiando ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -727,7 +727,7 @@ export default function Importar() {
                 { label: 'Descuentos', desc: 'Sección DSCTOS (Col C)' },
               ].map(({ label, desc }, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                  <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                  <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</p>
                     <p className="text-xs text-gray-400">{desc}</p>

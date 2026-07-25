@@ -36,7 +36,7 @@ export default function Auth() {
     try {
       const response = await api.post('/api/usuarios/login', { email: formData.email, password: formData.password })
       if (response.data.token) {
-        localStorage.setItem('auth_token', response.data.token)
+        // Guardar solo datos de usuario en localStorage (no el token, viaja en cookie httpOnly)
         localStorage.setItem('user_data', JSON.stringify(response.data.user || {}))
         setStep('success')
         setTimeout(() => login(), 1200)
@@ -51,14 +51,14 @@ export default function Auth() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
         <div className="relative z-10 text-center max-w-md w-full px-6">
-          <div className="w-32 h-32 rounded-3xl bg-red-600 flex items-center justify-center shadow-2xl mx-auto mb-8">
+          <div className="w-32 h-32 rounded-3xl bg-emerald-600 flex items-center justify-center shadow-2xl mx-auto mb-8">
             <FileSpreadsheet className="w-16 h-16 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-white mb-3">Verificando acceso</h2>
           <p className="text-gray-400 mb-8">Validando credenciales de usuario</p>
           <div className="flex items-center justify-center gap-3">
-            <Loader2 className="w-5 h-5 text-red-500 animate-spin" />
-            <span className="text-red-500 font-medium">Por favor espera</span>
+            <Loader2 className="w-5 h-5 text-emerald-500 animate-spin" />
+            <span className="text-emerald-500 font-medium">Por favor espera</span>
           </div>
         </div>
       </div>
@@ -83,8 +83,8 @@ export default function Auth() {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-[55%] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-500/20 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-20%] right-1/4 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px]"></div>
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-[-20%] right-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px]"></div>
         </div>
         
         <div className="relative z-10 flex flex-col justify-center p-16 w-full max-w-2xl mx-auto">
@@ -97,7 +97,7 @@ export default function Auth() {
 
           <div className="space-y-5">
             {[
-              { icon: Zap, title: 'Gestión Integral', desc: 'Administra personal, planillas y pagos en un solo lugar', color: 'from-red-600 to-red-700' },
+              { icon: Zap, title: 'Gestión Integral', desc: 'Administra personal, planillas y pagos en un solo lugar', color: 'from-emerald-600 to-emerald-700' },
               { icon: FileSpreadsheet, title: 'Importación Masiva', desc: 'Importa datos desde Excel de forma rápida y segura', color: 'from-gray-600 to-gray-700' },
               { icon: Shield, title: 'Reportes Detallados', desc: 'Genera reportes y estadísticas en tiempo real', color: 'from-gray-500 to-gray-600' },
             ].map((item, i) => (
@@ -118,7 +118,7 @@ export default function Auth() {
       <div className="w-full lg:w-[45%] flex items-center justify-center p-8 bg-gray-50">
         <div className="relative z-10 w-full max-w-md">
           <div className="lg:hidden text-center mb-10">
-            <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-xl mx-auto mb-4">
+            <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-xl mx-auto mb-4">
               <FileSpreadsheet className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900">Sistema de Gestión de Planillas</h1>
@@ -130,19 +130,19 @@ export default function Auth() {
           </div>
 
           {error && (
-            <div className="mb-8 p-5 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-4">
-              <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="mb-8 p-5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-4">
+              <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
                 <AlertCircle className="w-6 h-6 text-white" />
               </div>
-              <span className="text-red-700 font-medium flex-1">{error}</span>
+              <span className="text-emerald-700 font-medium flex-1">{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2.5 ml-1">Correo electrónico</label>
-              <div className={`flex items-center gap-3 w-full px-4 py-4 bg-white border-2 ${fieldErrors.email ? 'border-red-300 bg-red-50' : focusedField === 'email' ? 'border-red-400 shadow-lg' : 'border-gray-200 bg-gray-50'} rounded-2xl transition-all`}>
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${focusedField === 'email' ? 'bg-red-600 shadow-lg' : 'bg-gray-100'}`}>
+              <div className={`flex items-center gap-3 w-full px-4 py-4 bg-white border-2 ${fieldErrors.email ? 'border-emerald-300 bg-emerald-50' : focusedField === 'email' ? 'border-emerald-400 shadow-lg' : 'border-gray-200 bg-gray-50'} rounded-2xl transition-all`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${focusedField === 'email' ? 'bg-emerald-600 shadow-lg' : 'bg-gray-100'}`}>
                   <Mail className={`w-5 h-5 transition-colors ${focusedField === 'email' ? 'text-white' : 'text-gray-400'}`} />
                 </div>
                 <input
@@ -155,13 +155,13 @@ export default function Auth() {
                   onBlur={() => setFocusedField(null)}
                 />
               </div>
-              {fieldErrors.email && <p className="mt-2.5 text-sm text-red-600 font-medium ml-1">{fieldErrors.email}</p>}
+              {fieldErrors.email && <p className="mt-2.5 text-sm text-emerald-600 font-medium ml-1">{fieldErrors.email}</p>}
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2.5 ml-1">Contraseña</label>
-              <div className={`flex items-center gap-3 w-full px-4 py-4 bg-white border-2 ${fieldErrors.password ? 'border-red-300 bg-red-50' : focusedField === 'password' ? 'border-red-400 shadow-lg' : 'border-gray-200 bg-gray-50'} rounded-2xl transition-all`}>
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${focusedField === 'password' ? 'bg-red-600 shadow-lg' : 'bg-gray-100'}`}>
+              <div className={`flex items-center gap-3 w-full px-4 py-4 bg-white border-2 ${fieldErrors.password ? 'border-emerald-300 bg-emerald-50' : focusedField === 'password' ? 'border-emerald-400 shadow-lg' : 'border-gray-200 bg-gray-50'} rounded-2xl transition-all`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${focusedField === 'password' ? 'bg-emerald-600 shadow-lg' : 'bg-gray-100'}`}>
                   <Lock className={`w-5 h-5 transition-colors ${focusedField === 'password' ? 'text-white' : 'text-gray-400'}`} />
                 </div>
                 <input
@@ -173,17 +173,17 @@ export default function Auth() {
                   onFocus={() => setFocusedField('password')}
                   onBlur={() => setFocusedField(null)}
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-lg shrink-0">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-emerald-600 transition-colors p-1.5 hover:bg-emerald-50 rounded-lg shrink-0">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              {fieldErrors.password && <p className="mt-2.5 text-sm text-red-600 font-medium ml-1">{fieldErrors.password}</p>}
+              {fieldErrors.password && <p className="mt-2.5 text-sm text-emerald-600 font-medium ml-1">{fieldErrors.password}</p>}
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-xl shadow-red-600/25 hover:shadow-red-600/40 transition-all duration-300 flex items-center justify-center gap-3 text-base disabled:opacity-60 disabled:cursor-not-allowed group"
+              className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-xl shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-300 flex items-center justify-center gap-3 text-base disabled:opacity-60 disabled:cursor-not-allowed group"
             >
               {isLoading ? <><Loader2 className="w-5 h-5 animate-spin" /><span>Verificando...</span></> : <><span>Iniciar Sesión</span><ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>}
             </button>

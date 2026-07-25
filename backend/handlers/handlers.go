@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -19,8 +20,7 @@ import (
 )
 
 var (
-	loginAttempts = make(map[string]int)
-	loginMu       sync.Mutex
+	cleanupOnce sync.Once
 )
 
 func generateToken() string {
@@ -29,21 +29,59 @@ func generateToken() string {
 	return hex.EncodeToString(b)
 }
 
-func checkRateLimit(ip string) bool {
-	loginMu.Lock()
-	defer loginMu.Unlock()
-	attempts := loginAttempts[ip]
-	if attempts >= 5 {
+func StartCleanupRoutines(db *gorm.DB) {
+	cleanupOnce.Do(func() {
+		go func() {
+			for {
+				time.Sleep(15 * time.Minute)
+				db.Where("last_attempt < ?", time.Now().Add(-15*time.Minute)).Delete(&models.LoginAttempt{})
+			}
+		}()
+		go func() {
+			for {
+				time.Sleep(1 * time.Hour)
+				db.Where("token_expires_at IS NOT NULL AND token_expires_at < ?", time.Now()).Delete(&models.Usuario{})
+			}
+		}()
+		log.Println("Cleanup routines started")
+	})
+}
+
+func checkRateLimitDB(db *gorm.DB, ip string) bool {
+	var attempt models.LoginAttempt
+	result := db.Where("ip = ?", ip).First(&attempt)
+	if result.Error != nil {
+		db.Create(&models.LoginAttempt{IP: ip, Attempts: 1, LastAttempt: time.Now()})
+		return true
+	}
+	if attempt.Attempts >= 5 {
 		return false
 	}
-	loginAttempts[ip] = attempts + 1
+	db.Model(&attempt).Updates(map[string]interface{}{
+		"attempts":     attempt.Attempts + 1,
+		"last_attempt": time.Now(),
+	})
 	return true
 }
 
-func resetRateLimit(ip string) {
-	loginMu.Lock()
-	defer loginMu.Unlock()
-	delete(loginAttempts, ip)
+func resetRateLimitDB(db *gorm.DB, ip string) {
+	db.Where("ip = ?", ip).Delete(&models.LoginAttempt{})
+}
+
+func checkPasswordChangeRateLimit(db *gorm.DB, ip string) bool {
+	var attempt models.LoginAttempt
+	result := db.Where("ip = ?", ip).First(&attempt)
+	if result.Error != nil {
+		return true
+	}
+	if attempt.Attempts >= 5 {
+		return false
+	}
+	db.Model(&attempt).Updates(map[string]interface{}{
+		"attempts":     attempt.Attempts + 1,
+		"last_attempt": time.Now(),
+	})
+	return true
 }
 
 func SecurityHeaders() gin.HandlerFunc {
@@ -53,6 +91,10 @@ func SecurityHeaders() gin.HandlerFunc {
 		c.Header("X-XSS-Protection", "1; mode=block")
 		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
 		c.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+		c.Header("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+		c.Header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:")
+		c.Header("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
+		c.Header("Pragma", "no-cache")
 		c.Next()
 	}
 }
@@ -63,12 +105,12 @@ func getDB(c *gin.Context) *gorm.DB {
 
 func Login(c *gin.Context) {
 	ip := c.ClientIP()
-	if !checkRateLimit(ip) {
+	db := getDB(c)
+	if !checkRateLimitDB(db, ip) {
 		c.JSON(http.StatusTooManyRequests, gin.H{"error": "Demasiados intentos. Espera un momento antes de intentar de nuevo."})
 		return
 	}
 
-	db := getDB(c)
 	var input struct {
 		Email    string `json:"email" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -90,10 +132,25 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	resetRateLimit(ip)
+	resetRateLimitDB(db, ip)
 
 	token := generateToken()
-	db.Model(&usuario).Update("token", token)
+	tokenExpiresAt := time.Now().Add(24 * time.Hour)
+	db.Model(&usuario).Updates(map[string]interface{}{
+		"token":             token,
+		"token_expires_at":  tokenExpiresAt,
+	})
+
+	isSecure := strings.HasPrefix(c.Request.Host, "localhost") || strings.HasPrefix(c.Request.Host, "127.")
+	c.SetCookie(
+		"auth_token",
+		token,
+		86400,
+		"/",
+		"",
+		!isSecure,
+		true,
+	)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login exitoso",
@@ -110,25 +167,36 @@ func Login(c *gin.Context) {
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
+		token := ""
+
+		// Intentar leer de cookie httpOnly primero
+		if cookieToken, err := c.Cookie("auth_token"); err == nil && cookieToken != "" {
+			token = cookieToken
+		}
+
+		// Fallback: leer de header Authorization (para compatibilidad dev)
+		if token == "" {
+			authHeader := c.GetHeader("Authorization")
+			if authHeader != "" && len(authHeader) >= 7 && authHeader[:7] == "Bearer " {
+				token = authHeader[7:]
+			}
+		}
+
+		if token == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token requerido"})
 			return
 		}
-		if len(authHeader) < 7 || authHeader[:7] != "Bearer " {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Formato de token inválido"})
-			return
-		}
-		token := authHeader[7:]
-		if token == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token vacío"})
-			return
-		}
+
 		db := getDB(c)
 
 		var usuario models.Usuario
 		if err := db.Where("token = ?", token).First(&usuario).Error; err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Sesión inválida o expirada"})
+			return
+		}
+
+		if usuario.TokenExpiresAt != nil && usuario.TokenExpiresAt.Before(time.Now()) {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Sesión expirada"})
 			return
 		}
 
@@ -144,18 +212,36 @@ func CambiarPassword(c *gin.Context) {
 	usuario, _ := c.Get("usuario")
 	user := usuario.(models.Usuario)
 
+	ip := c.ClientIP()
+	if !checkPasswordChangeRateLimit(db, ip) {
+		c.JSON(http.StatusTooManyRequests, gin.H{"error": "Demasiados intentos de cambio de contraseña. Espera un momento."})
+		return
+	}
+
 	var input struct {
 		PasswordActual string `json:"password_actual" binding:"required"`
-		NuevaPassword  string `json:"nueva_password" binding:"required,min=6"`
+		NuevaPassword  string `json:"nueva_password" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos. La contraseña debe tener al menos 6 caracteres"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.PasswordActual)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "La contraseña actual no es correcta"})
+		return
+	}
+
+	if len(input.NuevaPassword) < 8 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "La contraseña debe tener al menos 8 caracteres"})
+		return
+	}
+	hasUpper := regexp.MustCompile(`[A-Z]`).MatchString(input.NuevaPassword)
+	hasNumber := regexp.MustCompile(`[0-9]`).MatchString(input.NuevaPassword)
+	hasSpecial := regexp.MustCompile(`[!@#$%^&*(),.?":{}|<>]`).MatchString(input.NuevaPassword)
+	if !hasUpper || !hasNumber || !hasSpecial {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "La contraseña debe contener al menos una mayúscula, un número y un carácter especial"})
 		return
 	}
 
@@ -171,6 +257,21 @@ func CambiarPassword(c *gin.Context) {
 	})
 
 	c.JSON(http.StatusOK, gin.H{"message": "Contraseña actualizada correctamente"})
+}
+
+func Logout(c *gin.Context) {
+	db := getDB(c)
+	usuario, _ := c.Get("usuario")
+	user := usuario.(models.Usuario)
+
+	db.Model(&user).Updates(map[string]interface{}{
+		"token":            "",
+		"token_expires_at": nil,
+	})
+
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Sesión cerrada correctamente"})
 }
 
 func ListarPersonal(c *gin.Context) {
@@ -364,17 +465,43 @@ func ActualizarPersonal(c *gin.Context) {
 		return
 	}
 
-	var input map[string]interface{}
+	var input struct {
+		DNI         *string `json:"dni"`
+		Nombres     *string `json:"nombres"`
+		Apellidos   *string `json:"apellidos"`
+		Puesto      *string `json:"puesto"`
+		RD          *string `json:"rd"`
+		UU          *string `json:"uu"`
+		Institucion *string `json:"institucion"`
+		Distrito    *string `json:"distrito"`
+	}
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 
-	if err := db.Model(&personal).Updates(input).Error; err != nil {
+	updates := map[string]interface{}{}
+	if input.DNI != nil { updates["dni"] = *input.DNI }
+	if input.Nombres != nil { updates["nombres"] = *input.Nombres }
+	if input.Apellidos != nil { updates["apellidos"] = *input.Apellidos }
+	if input.Puesto != nil { updates["puesto"] = *input.Puesto }
+	if input.RD != nil { updates["rd"] = *input.RD }
+	if input.UU != nil { updates["uu"] = *input.UU }
+	if input.Institucion != nil { updates["institucion"] = *input.Institucion }
+	if input.Distrito != nil { updates["distrito"] = *input.Distrito }
+
+	if len(updates) == 0 {
+		c.JSON(http.StatusOK, personal)
+		return
+	}
+
+	if err := db.Model(&personal).Updates(updates).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar"})
 		return
 	}
 
+	db.First(&personal, id)
 	c.JSON(http.StatusOK, personal)
 }
 
@@ -631,17 +758,43 @@ func ActualizarPlanilla(c *gin.Context) {
 		return
 	}
 
-	var input map[string]interface{}
+	var input struct {
+		PersonalID *uint   `json:"personal_id"`
+		Mes        *int16  `json:"mes"`
+		Anio       *int16  `json:"anio"`
+	}
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 
-	if err := db.Model(&planilla).Updates(input).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar"})
-		return
+	updates := map[string]interface{}{}
+	if input.PersonalID != nil {
+		if *input.PersonalID != planilla.PersonalID {
+			var existing models.Planilla
+			mes := planilla.Mes
+			anio := planilla.Anio
+			if input.Mes != nil { mes = *input.Mes }
+			if input.Anio != nil { anio = *input.Anio }
+			if err := db.Where("personal_id = ? AND mes = ? AND anio = ? AND id != ?", *input.PersonalID, mes, anio, planilla.ID).First(&existing).Error; err == nil {
+				c.JSON(http.StatusConflict, gin.H{"error": "Ya existe una planilla para este personal en el período"})
+				return
+			}
+			updates["personal_id"] = *input.PersonalID
+		}
+	}
+	if input.Mes != nil { updates["mes"] = *input.Mes }
+	if input.Anio != nil { updates["anio"] = *input.Anio }
+
+	if len(updates) > 0 {
+		if err := db.Model(&planilla).Updates(updates).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar"})
+			return
+		}
 	}
 
+	db.First(&planilla, id)
 	c.JSON(http.StatusOK, planilla)
 }
 
@@ -702,19 +855,40 @@ func ActualizarIngreso(c *gin.Context) {
 		return
 	}
 
-	var input map[string]interface{}
+	var input struct {
+		Tipo       *string  `json:"tipo"`
+		Monto      *float64 `json:"monto"`
+		Comentario *string  `json:"comentario"`
+		PlanillaID *uint    `json:"planilla_id"`
+	}
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 
-	db.Model(&ingreso).Updates(input)
+	updates := map[string]interface{}{}
+	if input.Tipo != nil { updates["tipo"] = *input.Tipo }
+	if input.Monto != nil { updates["monto"] = *input.Monto }
+	if input.Comentario != nil { updates["comentario"] = *input.Comentario }
+	if input.PlanillaID != nil && *input.PlanillaID != ingreso.PlanillaID {
+		updates["planilla_id"] = *input.PlanillaID
+	}
 
+	if len(updates) == 0 {
+		c.JSON(http.StatusOK, ingreso)
+		return
+	}
+
+	db.Model(&ingreso).Updates(updates)
+
+	planillaID := ingreso.PlanillaID
+	if input.PlanillaID != nil { planillaID = *input.PlanillaID }
 	var planilla models.Planilla
-	db.First(&planilla, ingreso.PlanillaID)
+	db.First(&planilla, planillaID)
 	db.Model(&planilla).Updates(map[string]interface{}{
-		"total_haberes": gorm.Expr("COALESCE((SELECT SUM(monto) FROM ingresos WHERE planilla_id = ?), 0)", ingreso.PlanillaID),
-		"total_liquido": gorm.Expr("COALESCE((SELECT SUM(monto) FROM ingresos WHERE planilla_id = ?), 0) - COALESCE((SELECT SUM(monto) FROM descuentos WHERE planilla_id = ?), 0)", ingreso.PlanillaID, ingreso.PlanillaID),
+		"total_haberes": gorm.Expr("COALESCE((SELECT SUM(monto) FROM ingresos WHERE planilla_id = ?), 0)", planillaID),
+		"total_liquido": gorm.Expr("COALESCE((SELECT SUM(monto) FROM ingresos WHERE planilla_id = ?), 0) - COALESCE((SELECT SUM(monto) FROM descuentos WHERE planilla_id = ?), 0)", planillaID, planillaID),
 	})
 
 	c.JSON(http.StatusOK, ingreso)
@@ -770,19 +944,40 @@ func ActualizarDescuento(c *gin.Context) {
 		return
 	}
 
-	var input map[string]interface{}
+	var input struct {
+		Tipo       *string  `json:"tipo"`
+		Monto      *float64 `json:"monto"`
+		Comentario *string  `json:"comentario"`
+		PlanillaID *uint    `json:"planilla_id"`
+	}
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos"})
 		return
 	}
 
-	db.Model(&descuento).Updates(input)
+	updates := map[string]interface{}{}
+	if input.Tipo != nil { updates["tipo"] = *input.Tipo }
+	if input.Monto != nil { updates["monto"] = *input.Monto }
+	if input.Comentario != nil { updates["comentario"] = *input.Comentario }
+	if input.PlanillaID != nil && *input.PlanillaID != descuento.PlanillaID {
+		updates["planilla_id"] = *input.PlanillaID
+	}
 
+	if len(updates) == 0 {
+		c.JSON(http.StatusOK, descuento)
+		return
+	}
+
+	db.Model(&descuento).Updates(updates)
+
+	planillaID := descuento.PlanillaID
+	if input.PlanillaID != nil { planillaID = *input.PlanillaID }
 	var planilla models.Planilla
-	db.First(&planilla, descuento.PlanillaID)
+	db.First(&planilla, planillaID)
 	db.Model(&planilla).Updates(map[string]interface{}{
-		"total_descuentos": gorm.Expr("COALESCE((SELECT SUM(monto) FROM descuentos WHERE planilla_id = ?), 0)", descuento.PlanillaID),
-		"total_liquido":    gorm.Expr("COALESCE((SELECT SUM(monto) FROM ingresos WHERE planilla_id = ?), 0) - COALESCE((SELECT SUM(monto) FROM descuentos WHERE planilla_id = ?), 0)", descuento.PlanillaID, descuento.PlanillaID),
+		"total_descuentos": gorm.Expr("COALESCE((SELECT SUM(monto) FROM descuentos WHERE planilla_id = ?), 0)", planillaID),
+		"total_liquido":    gorm.Expr("COALESCE((SELECT SUM(monto) FROM ingresos WHERE planilla_id = ?), 0) - COALESCE((SELECT SUM(monto) FROM descuentos WHERE planilla_id = ?), 0)", planillaID, planillaID),
 	})
 
 	c.JSON(http.StatusOK, descuento)

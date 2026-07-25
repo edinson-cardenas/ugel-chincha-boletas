@@ -6,6 +6,7 @@ import Planillas from './pages/Planillas'
 import Importar from './pages/Importar'
 import Exportar from './pages/Exportar'
 import Configuracion from './pages/Configuracion'
+import Escanear from './pages/Escanear'
 import Auth from './pages/Auth'
 
 const AuthContext = createContext<{ isAuthenticated: boolean; login: () => void; logout: () => void }>({
@@ -67,7 +68,6 @@ function AppContent() {
 
   useInactivityTimeout(30, () => {
     if (isAuthenticated) {
-      localStorage.removeItem('auth_token')
       localStorage.removeItem('user_data')
       localStorage.removeItem('isAuthenticated')
       setIsAuthenticated(false)
@@ -79,10 +79,17 @@ function AppContent() {
     localStorage.setItem('isAuthenticated', 'true')
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Llamar al backend para invalidar el token
+      await fetch('/api/usuarios/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      })
+    } catch {}
     setIsAuthenticated(false)
-    localStorage.setItem('isAuthenticated', 'false')
-    localStorage.removeItem('auth_token')
+    localStorage.removeItem('isAuthenticated')
     localStorage.removeItem('user_data')
   }
 
@@ -110,6 +117,7 @@ function AppContent() {
           <Route path="planillas" element={<Planillas />} />
           <Route path="importar" element={<Importar />} />
           <Route path="exportar" element={<Exportar />} />
+          <Route path="escanear" element={<Escanear />} />
           <Route path="configuracion" element={<Configuracion />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -13,3 +13,8 @@ services:
       - key: PORT
         value: "8080"
     healthCheckPath: /health
+
+# NOTA: Para Supabase, crear la connection string en el dashboard de Render
+# como variable de entorno secreta (sync: false).
+# Connection string Supabase:
+# DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT_ID].supabase.co:6543/postgres

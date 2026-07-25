@@ -91,7 +91,7 @@ export default function Dashboard() {
     : new Date().toLocaleDateString('es-PE', { month: 'long', year: 'numeric' }).toUpperCase()
 
   const stats = [
-    { label: 'Total Personal', value: data?.total_personal || 0, icon: Users, bg: 'bg-red-600' },
+    { label: 'Total Personal', value: data?.total_personal || 0, icon: Users, bg: 'bg-emerald-600' },
     { label: 'Planillas Creadas', value: data?.total_planillas || 0, icon: FileSpreadsheet, bg: 'bg-gray-700' },
     { label: 'Total Haberes', value: formatCurrency(data?.total_haberes || 0), icon: TrendingUp, bg: 'bg-gray-500' },
     { label: 'Total Descuentos', value: formatCurrency(data?.total_descuentos || 0), icon: TrendingDown, bg: 'bg-gray-400' },
@@ -103,10 +103,10 @@ export default function Dashboard() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center">
                 <Activity className="w-5 h-5 text-white" />
               </div>
-              <span className="text-sm font-semibold text-red-600">Panel de Control</span>
+              <span className="text-sm font-semibold text-emerald-600">Panel de Control</span>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Bienvenido de nuevo</h2>
             <p className="text-gray-500 dark:text-gray-400 mt-1">Resumen de tu sistema de nóminas</p>
@@ -132,19 +132,19 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       {error && (
-        <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-          <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
-          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+        <div className="flex items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl">
+          <AlertTriangle className="w-5 h-5 text-emerald-600 shrink-0" />
+          <p className="text-sm text-emerald-700 dark:text-emerald-400">{error}</p>
         </div>
       )}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
               <Activity className="w-5 h-5 text-white" />
             </div>
-            <span className="text-sm font-semibold text-red-600">Panel de Control</span>
+            <span className="text-sm font-semibold text-emerald-600">Panel de Control</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Bienvenido de nuevo</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Resumen de tu sistema de nóminas</p>
@@ -216,7 +216,7 @@ export default function Dashboard() {
         <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
                 <FileSpreadsheet className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -283,7 +283,7 @@ export default function Dashboard() {
                     <tr key={p.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                             {p.personal?.nombres?.charAt(0) || '?'}
                           </div>
                           <div>
@@ -302,7 +302,7 @@ export default function Dashboard() {
                         <span className="font-semibold text-gray-500 dark:text-gray-400">{formatCurrency(p.total_descuentos)}</span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm shadow-sm">
+                        <span className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold text-sm shadow-sm">
                           {formatCurrency(p.total_liquido)}
                         </span>
                       </td>
@@ -329,7 +329,7 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-6 text-white shadow-lg">
+          <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-6 text-white shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-white" />
@@ -374,12 +374,12 @@ export default function Dashboard() {
                 </div>
                 <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(data?.total_descuentos || 0)}</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900/30">
+              <div className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-900/30">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-red-600 dark:text-red-400" />
-                  <span className="text-sm font-medium text-red-700 dark:text-red-400">Líquido a Pagar</span>
+                  <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Líquido a Pagar</span>
                 </div>
-                <span className="font-bold text-red-700 dark:text-red-400">{formatCurrency(data?.total_liquido || 0)}</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(data?.total_liquido || 0)}</span>
               </div>
             </div>
           </div>

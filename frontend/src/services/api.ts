@@ -7,6 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 })
 
 api.interceptors.request.use((config) => {
@@ -21,7 +22,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token')
       localStorage.removeItem('user_data')
       localStorage.removeItem('isAuthenticated')
       if (window.location.pathname !== '/auth') {
@@ -125,6 +125,29 @@ export const importarApi = {
   limpiarTodo: () =>
     api.delete('/api/importar/limpiar-todo'),
   periodos: () => api.get('/api/importar/periodos'),
+}
+
+export const ocrApi = {
+  scan: (file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return api.post('/api/ocr/scan', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
+    })
+  },
+  scanBatch: (files: File[]) => {
+    const fd = new FormData()
+    files.forEach(f => fd.append('files', f))
+    return api.post('/api/ocr/scan-batch', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 300000,
+    })
+  },
+  list: (page = 1, limit = 20) => api.get('/api/ocr/boletas', { params: { page, limit } }),
+  delete: (id: number) => api.delete(`/api/ocr/boletas/${id}`),
+  exportar: (params: { mes?: number; anio?: number; ids?: string }) =>
+    api.get('/api/ocr/exportar', { params, responseType: 'blob' }),
 }
 
 export const exportarApi = {

@@ -92,8 +92,8 @@ export default function Exportar() {
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <Download className="w-5 h-5 text-red-600" />
-          <span className="text-sm font-medium text-red-600">Exportación de Datos</span>
+          <Download className="w-5 h-5 text-emerald-600" />
+          <span className="text-sm font-medium text-emerald-600">Exportación de Datos</span>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Exportar Planilla Individual</h2>
         <p className="text-gray-500 dark:text-gray-400 mt-1">Selecciona un empleado para exportar todas sus planillas a Excel</p>
@@ -103,7 +103,7 @@ export default function Exportar() {
         <div className="lg:col-span-2 space-y-5">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center">
                 <User className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -111,16 +111,16 @@ export default function Exportar() {
                 <p className="text-sm text-gray-500 dark:text-gray-400">Busca por nombre o número de DNI</p>
               </div>
               {selectedPerson && (
-                <button onClick={clearSelection} className="ml-auto text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-xl transition-all">
+                <button onClick={clearSelection} className="ml-auto text-gray-400 hover:text-emerald-500 p-2 hover:bg-emerald-50 rounded-xl transition-all">
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
 
             <div className="relative">
-              <div className={`flex items-center gap-3 w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border-2 ${selectedPerson ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'} rounded-xl transition-all`}>
+              <div className={`flex items-center gap-3 w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border-2 ${selectedPerson ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'border-gray-200 dark:border-gray-600'} rounded-xl transition-all`}>
                 <div className="shrink-0">
-                  {searching ? <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" /> : <Search className="w-5 h-5 text-gray-400" />}
+                  {searching ? <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" /> : <Search className="w-5 h-5 text-gray-400" />}
                 </div>
                 <input
                   type="text"
@@ -132,7 +132,7 @@ export default function Exportar() {
                   disabled={!!selectedPerson}
                 />
                 {selectedPerson && (
-                  <button onClick={clearSelection} className="text-red-500 hover:text-red-700 p-1.5 shrink-0">
+                  <button onClick={clearSelection} className="text-emerald-500 hover:text-emerald-700 p-1.5 shrink-0">
                     <X className="w-5 h-5" />
                   </button>
                 )}
@@ -140,8 +140,8 @@ export default function Exportar() {
               {showSearchResults && searchResults.length > 0 && (
                 <div className="absolute z-20 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-72 overflow-y-auto">
                   {searchResults.map((p) => (
-                    <button key={p.id} type="button" className="w-full text-left px-5 py-4 hover:bg-red-50 dark:hover:bg-red-900/20 border-b border-gray-100 dark:border-gray-700 last:border-0 flex items-center gap-4" onClick={() => selectPerson(p)}>
-                      <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                    <button key={p.id} type="button" className="w-full text-left px-5 py-4 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border-b border-gray-100 dark:border-gray-700 last:border-0 flex items-center gap-4" onClick={() => selectPerson(p)}>
+                      <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
                         {p.nombres?.charAt(0) || '?'}
                       </div>
                       <div className="flex-1">
@@ -159,13 +159,13 @@ export default function Exportar() {
             {selectedPerson && (
               <div className="mt-5 p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
                 <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl">
+                  <div className="w-16 h-16 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl">
                     {selectedPerson.nombres?.charAt(0) || '?'}
                   </div>
                   <div className="flex-1">
                     <p className="font-bold text-gray-900 dark:text-white text-xl">{selectedPerson.apellidos}, {selectedPerson.nombres}</p>
                     <div className="flex flex-wrap gap-4 mt-2">
-                      <span className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600"><Hash className="w-4 h-4 text-red-500" /> {selectedPerson.dni || 'Sin DNI'}</span>
+                      <span className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600"><Hash className="w-4 h-4 text-emerald-500" /> {selectedPerson.dni || 'Sin DNI'}</span>
                       <span className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600">{selectedPerson.puesto || 'Sin puesto'}</span>
                     </div>
                   </div>
@@ -175,9 +175,9 @@ export default function Exportar() {
           </div>
 
           {exportError && (
-            <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-              <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
-              <p className="text-sm text-red-700 dark:text-red-400 font-medium">{exportError}</p>
+            <div className="flex items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl">
+              <AlertCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+              <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">{exportError}</p>
             </div>
           )}
 
@@ -185,7 +185,7 @@ export default function Exportar() {
             <button
               onClick={handleExport}
               disabled={exporting}
-              className="w-full py-4 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-3 text-lg"
+              className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-3 text-lg"
             >
               {exporting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -198,7 +198,7 @@ export default function Exportar() {
         </div>
 
         <div className="space-y-5">
-          <div className="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-6 text-white">
+          <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-6 text-white">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><FileSpreadsheet className="w-6 h-6 text-white" /></div>
               <div><h3 className="font-bold text-lg">Excel Individual</h3><p className="text-white/70 text-sm">Una sola planilla por empleado</p></div>
@@ -211,11 +211,11 @@ export default function Exportar() {
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2"><CalendarDays className="w-4 h-4 text-red-600" />Guía rápida</h3>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2"><CalendarDays className="w-4 h-4 text-emerald-600" />Guía rápida</h3>
             <div className="space-y-3 text-xs text-gray-500 dark:text-gray-400">
-              <div className="flex items-start gap-2"><div className="w-5 h-5 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-red-600 dark:text-red-400 font-bold">1</span></div><p>Busca al empleado por nombre o DNI</p></div>
-              <div className="flex items-start gap-2"><div className="w-5 h-5 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-red-600 dark:text-red-400 font-bold">2</span></div><p>Revisa los datos mostrados</p></div>
-              <div className="flex items-start gap-2"><div className="w-5 h-5 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-red-600 dark:text-red-400 font-bold">3</span></div><p>Haz clic en "Exportar" para descargar</p></div>
+              <div className="flex items-start gap-2"><div className="w-5 h-5 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-emerald-600 dark:text-emerald-400 font-bold">1</span></div><p>Busca al empleado por nombre o DNI</p></div>
+              <div className="flex items-start gap-2"><div className="w-5 h-5 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-emerald-600 dark:text-emerald-400 font-bold">2</span></div><p>Revisa los datos mostrados</p></div>
+              <div className="flex items-start gap-2"><div className="w-5 h-5 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-emerald-600 dark:text-emerald-400 font-bold">3</span></div><p>Haz clic en "Exportar" para descargar</p></div>
             </div>
           </div>
         </div>

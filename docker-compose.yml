@@ -1,14 +1,39 @@
 services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: planillas-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-planillas}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-planillas2024}
+      POSTGRES_DB: ${DB_NAME:-planillas}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-planillas} -d ${DB_NAME:-planillas}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: planillas-api
     environment:
-      - DATABASE_URL=postgresql://neondb_owner:npg_gjhU4ALcJT8O@ep-curly-brook-adbnqkk1-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
-      - CORS_ORIGINS=http://localhost,http://localhost:5173,http://localhost:80
+      - DATABASE_URL=${DATABASE_URL:-postgres://planillas:planillas2024@postgres:5432/planillas?sslmode=disable}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost,http://localhost:5173,http://localhost:80}
+      - PORT=${PORT:-8080}
     ports:
-      - "8080:8080"
+      - "${PORT:-8080}:8080"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -21,3 +46,7 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads_data:

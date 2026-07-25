@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, FileSpreadsheet, Upload, Download, Menu, LogOut, ChevronDown, Loader2, Settings } from 'lucide-react'
+import { LayoutDashboard, Users, FileSpreadsheet, Upload, Download, Scan, Menu, LogOut, ChevronDown, Loader2, Settings } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useAuth, useTask } from '../App'
 
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', desc: 'Resumen general' },
   { to: '/planillas', icon: Users, label: 'Planillas', desc: 'Personal docente' },
   { to: '/importar', icon: Upload, label: 'Importar', desc: 'Importar datos' },
+  { to: '/escanear', icon: Scan, label: 'Escanear', desc: 'Escanear boletas' },
   { to: '/exportar', icon: Download, label: 'Exportar', desc: 'Exportar planillas' },
   { to: '/configuracion', icon: Settings, label: 'Configuración', desc: 'Ajustes del sistema' },
 ]
@@ -64,7 +65,7 @@ export default function Layout() {
           <div className="p-6 border-b border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg">
                   <FileSpreadsheet className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -82,7 +83,7 @@ export default function Layout() {
                 className={({ isActive }) =>
                   `group flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
                     isActive
-                      ? 'bg-red-600 text-white shadow-lg shadow-red-600/25'
+                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25'
                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`
                 }
@@ -105,7 +106,7 @@ export default function Layout() {
           <div className="p-4 border-t border-gray-100 dark:border-gray-700">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all"
             >
               <LogOut className="w-5 h-5" />
               <span className="font-medium text-sm">Cerrar Sesión</span>
@@ -124,7 +125,7 @@ export default function Layout() {
                 </button>
               )}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl flex items-center justify-center">
                   <FileSpreadsheet className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -141,7 +142,7 @@ export default function Layout() {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-3 pl-2 rounded-xl py-2 pr-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
               >
-                <div className="w-9 h-9 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-9 h-9 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                   {userInitials}
                 </div>
                 <div className="text-left hidden md:block">
@@ -160,7 +161,7 @@ export default function Layout() {
                   <div className="py-1">
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all"
                     >
                       <LogOut className="w-4 h-4" />
                       <span className="text-sm font-medium">Cerrar Sesión</span>
@@ -188,7 +189,7 @@ export default function Layout() {
       {isProcessing && (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl px-8 py-6 flex items-center gap-4">
-            <Loader2 className="w-6 h-6 text-red-600 animate-spin" />
+            <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
             <span className="text-gray-900 dark:text-white font-medium">{isProcessing}</span>
           </div>
         </div>
