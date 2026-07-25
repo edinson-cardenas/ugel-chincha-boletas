@@ -1,18 +1,40 @@
 package database
 
 import (
+	"context"
 	"log"
+	"net"
 	"time"
 
 	"planillas-backend/internal/model"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/stdlib"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func Connect(dsn string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// Forzar IPv4 - Render no soporta IPv6
+	connConfig, err := pgx.ParseConfig(dsn)
+	if err != nil {
+		log.Fatal("Error parseando DSN:", err)
+	}
+	connConfig.LookupFunc = func(ctx context.Context, host string) ([]string, error) {
+		ips, err := net.DefaultResolver.LookupIP(ctx, "ip4", host)
+		if err != nil {
+			return nil, err
+		}
+		addrs := make([]string, len(ips))
+		for i, ip := range ips {
+			addrs[i] = ip.String()
+		}
+		return addrs, nil
+	}
+
+	sqlDB := stdlib.OpenDB(*connConfig)
+	db, err := gorm.Open(postgres.New(postgres.Config{Conn: sqlDB}), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error conectando a la base de datos:", err)
 	}
