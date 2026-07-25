@@ -1,15 +1,15 @@
 services:
   - type: web
-    name: planillas-api
+    name: planillas-chincha-api
     env: docker
-    repo: https://github.com/Pierreyfff/ugelaa
-    branch: ULTIMOO
+    repo: https://github.com/edinson-cardenas/ugel-chincha-boletas.git
+    branch: main
     rootDir: backend
     envVars:
       - key: DATABASE_URL
         sync: false
       - key: CORS_ORIGINS
-        value: https://ugelaa.vercel.app,http://localhost:5173
+        value: https://ugel-chincha-planillas.vercel.app,http://localhost:5173
       - key: PORT
         value: "8080"
     healthCheckPath: /health
