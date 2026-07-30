@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"planillas-backend/internal/model"
@@ -14,7 +15,7 @@ import (
 )
 
 func OcrScanner(db *gorm.DB) gin.HandlerFunc {
-	scanner := ocr.NewScanner("")
+	scanner := ocr.NewScanner(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	return func(c *gin.Context) {
 		file, err := c.FormFile("file")
@@ -73,7 +74,7 @@ func OcrScanner(db *gorm.DB) gin.HandlerFunc {
 }
 
 func OcrScanBatch(db *gorm.DB) gin.HandlerFunc {
-	scanner := ocr.NewScanner("")
+	scanner := ocr.NewScanner(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	return func(c *gin.Context) {
 		form, err := c.MultipartForm()

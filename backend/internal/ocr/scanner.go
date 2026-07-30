@@ -32,9 +32,19 @@ func (s *Scanner) ScanImage(imagePath string) (*model.BoletaScanResult, error) {
 	var confidence float64
 	var engine string
 
+	// Preprocesar imagen para mejorar OCR
+	preprocessedPath := imagePath + ".pp.jpg"
+	if err := PreprocessImage(imagePath, preprocessedPath); err != nil {
+		log.Printf("[OCR] Advertencia: preprocesamiento falló: %v, usando imagen original", err)
+		preprocessedPath = imagePath
+	} else {
+		log.Printf("[OCR] Imagen preprocesada: %s", preprocessedPath)
+		defer os.Remove(preprocessedPath) // limpiar después
+	}
+
 	// Primero intentar con Tesseract (local, rápido, gratis)
-	log.Printf("[OCR] Procesando con Tesseract: %s", imagePath)
-	text, confidence, err := s.tesseract.ExtractText(imagePath)
+	log.Printf("[OCR] Procesando con Tesseract: %s", preprocessedPath)
+	text, confidence, err := s.tesseract.ExtractText(preprocessedPath)
 
 	if err != nil || confidence < s.confidenceThreshold {
 		if s.googleVision.IsAvailable() {
@@ -66,7 +76,12 @@ func (s *Scanner) ScanImage(imagePath string) (*model.BoletaScanResult, error) {
 
 	result, err := s.parser.Parse(text)
 	if err != nil {
-		return nil, fmt.Errorf("error parseando boleta: %w", err)
+		// Incluir el texto raw truncado en el error para depuración
+		rawPreview := text
+		if len(rawPreview) > 500 {
+			rawPreview = rawPreview[:500] + "..."
+		}
+		return nil, fmt.Errorf("error parseando boleta: %w\nTexto extraído (primeros 500 chars):\n%s", err, rawPreview)
 	}
 
 	result.OcrEngine = engine

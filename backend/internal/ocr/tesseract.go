@@ -5,6 +5,7 @@ package ocr
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/otiai10/gosseract/v2"
@@ -29,7 +30,12 @@ func (t *TesseractOCR) ExtractText(imagePath string) (string, float64, error) {
 		return "", 0, fmt.Errorf("tesseract: error extrayendo texto: %w", err)
 	}
 
-	confidence := client.GetTextConfidence() / 100.0
+	// gosseract v2 no tiene GetTextConfidence; estimamos confianza
+	// basado en si se extrajo texto válido
+	confidence := 0.85
+	if strings.TrimSpace(text) == "" {
+		confidence = 0.0
+	}
 
 	if strings.TrimSpace(text) == "" {
 		client.SetPageSegMode(gosseract.PSM_SINGLE_BLOCK)
@@ -51,7 +57,26 @@ func (t *TesseractOCR) IsAvailable() bool {
 }
 
 func PreprocessImage(inputPath, outputPath string) error {
-	return copyFile(inputPath, outputPath)
+	// Preprocesamiento para mejorar OCR en fotos de documentos
+	// 1. Escala de grises + deskew (corregir rotación)
+	// 2. Normalizar contraste
+	// 3. Aumentar resolución para mejor OCR
+	cmd := exec.Command("convert",
+		inputPath,
+		"-colorspace", "Gray",
+		"-deskew", "40%",
+		"-auto-level",
+		"-contrast-stretch", "2%x1%",
+		"-sharpen", "0x1.5",
+		"-resize", "250%",
+		"-quality", "100",
+		outputPath,
+	)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error preprocesando imagen: %w - %s", err, string(output))
+	}
+	return nil
 }
 
 func copyFile(src, dst string) error {

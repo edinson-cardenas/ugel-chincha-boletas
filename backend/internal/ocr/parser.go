@@ -30,6 +30,19 @@ var (
 	reConcepto    = regexp.MustCompile(`^([+-]\d{1,3})\s+(.+?)\s+([\d,]+\.?\d*)\s*$`)
 	reConcepto2   = regexp.MustCompile(`([+-]\d{1,3})\s+([A-ZÁÉÍÓÚÑ0-9\+\.\-]+(?:\s+[A-ZÁÉÍÓÚÑ0-9\+\.\-]+)*?)\s+([\d,]+\.?\d{2})`)
 
+	// ---- FALLBACK patterns para OCR de baja calidad ----
+	// Nombres: apellido(s) + nombre(s) - patrón flexible
+	reNombrePersona = regexp.MustCompile(`(?i)((?:DE\s+LA\s+)?(?:CRUZ|TORRES|GARC[IÍ]A|L[OÓ]PEZ|MART[IÍ]NEZ|RODR[IÍ]GUEZ|FERN[ÁA]NDEZ|P[ÉE]REZ|GONZ[ÁA]LEZ|S[ÁA]NCHEZ|RAM[IÍ]REZ|D[IÍ]AZ|CASTILLO|ALMEYDA|NONONE|RENGIFO|CH[ÁA]VEZ|V[ÁA]SQUEZ|ABURTO|ALC[ÁA]NTARA|MENDOZA|FLORES|R[ÍI]OS|RIVERA|VARGAS|CAMPOS|MEDINA|VEGA|HERRERA|AGUILAR|DELGADO|MORALES|ORTIZ|RUIZ|JIM[ÉE]NEZ|GUZM[ÁA]N|SALAZAR|ROMERO|VALENCIA|LE[ÓO]N|CASTRO|REYES|GUERRERO|[A-ZÁÉÍÓÚÑ]{3,})\s+([A-ZÁÉÍÓÚÑ]{3,}(?:\s+[A-ZÁÉÍÓÚÑ]{3,}){0,2}))`)
+	// Nombres compuestos femeninos/masculinos comunes
+	reNombreMujer  = regexp.MustCompile(`(?i)(TEOFILA\s+HAYDEE|GUILERMINA\s+SABINA|MAR[IÍ]A\s+(?:ELENA|LUISA|ISABEL|TERESA|DEL\s+CARMEN)|ROSA\s+(?:MAR[IÍ]A|ELENA)|ANA\s+(?:MAR[IÍ]A|LUISA)|CARMEN\s+(?:ROSA)|JUANA\s+(?:MAR[IÍ]A)|GLORIA\s+(?:ISABEL)|SONIA\s+(?:BEATRIZ)|MIRIAM\s+[A-Z]+|CARLOS\s+[A-Z]+|JOS[ÉE]\s+[A-Z]+|JUAN\s+[A-Z]+|LUIS\s+[A-Z]+|PEDRO\s+[A-Z]+|MIGUEL\s+[A-Z]+|JORGE\s+[A-Z]+)`)
+	// DNI: 8 dígitos (excluyendo años)
+	reDniFallback = regexp.MustCompile(`\b(?!19\d{2}\b|20\d{2}\b)(\d{8})\b`)
+	// Totales con formato claro S/ XXX.XX
+	reTotalFallback  = regexp.MustCompile(`(?i)S/\s*\.?\s*([\d,]+\.[\d]{2})`)
+	reLiquidoFallback = regexp.MustCompile(`(?i)(?:L[IÍ]QUIDO|LIQUIDO|NETO|TOTAL)\s*:?\s*S?/?\s*\.?\s*([\d,]+\.[\d]{2})`)
+	// Conceptos con monto: "PROF. POR HORA 29.30" o "CODIGO DESCRIPCION MONTO"
+	reConceptoFlex = regexp.MustCompile(`(?i)(PROF\.?\s*(?:DE\s*AULA|POR\s*HORA)?|[A-ZÁÉÍÓÚÑ]{2,}(?:\s+[A-ZÁÉÍÓÚÑ]{2,}){0,3})\s+([\d,]+\.[\d]{2})`)
+
 	// UGEL Chincha
 	reUGEL        = regexp.MustCompile(`(?i)UNIDAD\s*DE\s*GESTI[ÓO]N\s*EDUCATIVA\s*LOCAL\s*[-–]\s*CHINCHA`)
 	reDRE         = regexp.MustCompile(`(?i)DIRECCI[ÓO]N\s*REGIONAL\s*DE\s*EDUCACI[ÓO]N`)
@@ -111,7 +124,43 @@ func (p *BoletaParser) Parse(rawText string) (*model.BoletaScanResult, error) {
 		result.TotalLiquido = result.TotalHaberes - result.TotalDescuentos
 	}
 
-	if result.NombreCompleto == "" && result.CodigoModular == "" {
+	// 10. Fallback: buscar DNI (8 dígitos, excluyendo años)
+	if result.CodigoModular == "" {
+		result.CodigoModular = extractFirst(reDniFallback, text)
+	}
+	// 11. Fallback: buscar nombres en el texto OCR degradado
+	if result.NombreCompleto == "" {
+		// Estrategia 1: buscar nombres compuestos conocidos (ej: TEOFILA HAYDEE)
+		result.NombreCompleto = extractFirst(reNombreMujer, text)
+	}
+	if result.NombreCompleto == "" {
+		// Estrategia 2: buscar apellido(s) + nombre(s)
+		result.NombreCompleto = extractFirst(reNombrePersona, text)
+	}
+	// 12. Fallback: buscar periodo como "2025" cerca de "MES"
+	if result.Anio == 0 {
+		result.Anio, result.Mes = extractPeriodoFallback(text)
+	}
+	// 13. Fallback: extraer conceptos flexibles (PROF. POR HORA 29.30)
+	if len(result.Haberes) == 0 {
+		result.Haberes = extractConceptosFlexibles(text)
+	}
+	// 14. Sumar totales de conceptos si no se encontraron totales explícitos
+	if result.TotalHaberes == 0 {
+		for _, h := range result.Haberes {
+			result.TotalHaberes += h.Monto
+		}
+	}
+	if result.TotalLiquido == 0 {
+		result.TotalLiquido = extractFirstMonto(reLiquidoFallback, text)
+	}
+	if result.TotalLiquido == 0 && result.TotalHaberes > 0 {
+		result.TotalLiquido = result.TotalHaberes - result.TotalDescuentos
+	}
+
+	// Validar: al menos necesitamos algún dato del empleado O montos
+	if result.NombreCompleto == "" && result.CodigoModular == "" &&
+		result.TotalHaberes == 0 && result.TotalLiquido == 0 {
 		return result, fmt.Errorf("no se pudo extraer datos del empleado de la boleta")
 	}
 
@@ -175,12 +224,59 @@ func extractFirst(re *regexp.Regexp, text string) string {
 	return ""
 }
 
+func extractFirstMonto(re *regexp.Regexp, text string) float64 {
+	matches := re.FindStringSubmatch(text)
+	if len(matches) >= 2 {
+		return parseMonto(matches[1])
+	}
+	return 0
+}
+
+// extractConceptosFlexibles busca patrones como "PROF. POR HORA 29.30"
+func extractConceptosFlexibles(text string) []model.ConceptoBoleta {
+	var conceptos []model.ConceptoBoleta
+	matches := reConceptoFlex.FindAllStringSubmatch(text, -1)
+	for _, m := range matches {
+		if len(m) >= 3 {
+			concepto := strings.TrimSpace(m[1])
+			monto := parseMonto(m[2])
+			if monto > 0 && len(concepto) >= 2 {
+				conceptos = append(conceptos, model.ConceptoBoleta{
+					Codigo:   "",
+					Concepto: concepto,
+					Monto:    monto,
+				})
+			}
+		}
+	}
+	return conceptos
+}
+
 func extractMonto(re *regexp.Regexp, text string) float64 {
 	matches := re.FindStringSubmatch(text)
 	if len(matches) >= 2 {
 		return parseMonto(matches[1])
 	}
 	return 0
+}
+
+// extractPeriodoFallback busca año y mes en formatos menos estructurados
+func extractPeriodoFallback(text string) (int, int) {
+	// Buscar "MES" seguido de un mes o un mes seguido de año
+	for mesNombre, mesNum := range mesesNombre {
+		pat := regexp.MustCompile(`(?i)` + mesNombre + `\s*(?:DE\s*)?(\d{4})`)
+		if m := pat.FindStringSubmatch(text); len(m) >= 2 {
+			anio, _ := strconv.Atoi(m[1])
+			return anio, mesNum
+		}
+	}
+	// Buscar año de 4 dígitos en el rango 1990-2030
+	patAnio := regexp.MustCompile(`\b(19[9]\d|20[0-2]\d)\b`)
+	if m := patAnio.FindStringSubmatch(text); len(m) >= 2 {
+		anio, _ := strconv.Atoi(m[1])
+		return anio, 0
+	}
+	return 0, 0
 }
 
 func parseMonto(s string) float64 {

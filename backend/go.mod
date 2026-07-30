@@ -3,7 +3,6 @@ module planillas-backend
 go 1.25.0
 
 require (
-	cloud.google.com/go/vision v1.2.0
 	cloud.google.com/go/vision/v2 v2.15.0
 	github.com/extrame/xls v0.0.1
 	github.com/gin-contrib/cors v1.4.0

@@ -20,29 +20,38 @@ func NewGoogleVisionOCR(credentialsFile string) *GoogleVisionOCR {
 }
 
 func (g *GoogleVisionOCR) IsAvailable() bool {
-	if g.credentialsFile == "" {
-		return false
-	}
-	if _, err := os.Stat(g.credentialsFile); os.IsNotExist(err) {
-		return false
-	}
-	envCreds := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+	// Si hay archivo de credenciales explícito, verificar que exista
 	if g.credentialsFile != "" {
-		envCreds = g.credentialsFile
+		if _, err := os.Stat(g.credentialsFile); err == nil {
+			return true
+		}
 	}
-	return envCreds != ""
+	// Si hay variable de entorno GOOGLE_APPLICATION_CREDENTIALS, verificar que exista
+	if envCreds := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"); envCreds != "" {
+		if _, err := os.Stat(envCreds); err == nil {
+			return true
+		}
+	}
+	// Intentar ADC (Application Default Credentials) - gcloud auth application-default login
+	// Verificamos si existe el archivo de ADC estándar
+	homeDir, _ := os.UserHomeDir()
+	adcPath := homeDir + "/.config/gcloud/application_default_credentials.json"
+	if _, err := os.Stat(adcPath); err == nil {
+		return true
+	}
+	return false
 }
 
 func (g *GoogleVisionOCR) ExtractText(imagePath string) (string, float64, error) {
 	ctx := context.Background()
 
-	credsFile := g.credentialsFile
-	if credsFile == "" {
-		credsFile = os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+	// Configurar credenciales: archivo explícito > env var > ADC
+	if g.credentialsFile != "" {
+		if _, err := os.Stat(g.credentialsFile); err == nil {
+			os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", g.credentialsFile)
+		}
 	}
-	if credsFile != "" {
-		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", credsFile)
-	}
+	// Si no hay credenciales explícitas, NewImageAnnotatorClient usará ADC automáticamente
 
 	client, err := vision.NewImageAnnotatorClient(ctx)
 	if err != nil {

@@ -5,6 +5,7 @@ package ocr
 import (
 	"fmt"
 	"os"
+	"os/exec"
 )
 
 type TesseractOCR struct{}
@@ -22,7 +23,22 @@ func (t *TesseractOCR) IsAvailable() bool {
 }
 
 func PreprocessImage(inputPath, outputPath string) error {
-	return copyFile(inputPath, outputPath)
+	cmd := exec.Command("convert",
+		inputPath,
+		"-colorspace", "Gray",
+		"-deskew", "40%",
+		"-normalize",
+		"-contrast-stretch", "5%x1%",
+		"-sharpen", "0x1.5",
+		"-noise", "3",
+		"-resize", "250%",
+		outputPath,
+	)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error preprocesando imagen: %w - %s", err, string(output))
+	}
+	return nil
 }
 
 func copyFile(src, dst string) error {
